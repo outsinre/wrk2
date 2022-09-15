@@ -53,8 +53,7 @@ $(ODIR):
 
 $(ODIR)/bytecode.o: src/wrk.lua
 	@echo LUAJIT $<
-	@echo@$(SHELL) -c 'PATH=obj/bin:$(PATH) luajit -b $(CURDIR)/$< $(CURDIR)/$(patsubst %.o,%.c,$@)'
-	@echo@$(CC) -xc -c -o $@ $(patsubst %.o,%.c,$@)
+	@$(SHELL) -c 'cd $(LDIR) && ./luajit -b $(CURDIR)/$< $(CURDIR)/$@'
 
 $(ODIR)/%.o : %.c
 	@echo CC $<
