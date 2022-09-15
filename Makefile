@@ -35,7 +35,6 @@ LDIR     = deps/luajit/src
 LIBS    := -lluajit $(LIBS)
 CFLAGS  += -I$(LDIR)
 LDFLAGS += -L$(LDIR)
-DEPS    :=
 
 all: $(BIN)
 
@@ -52,9 +51,10 @@ $(OBJ): config.h Makefile $(LDIR)/libluajit.a | $(ODIR)
 $(ODIR):
 	@mkdir -p $@
 
-$(ODIR)/bytecode.c: src/wrk.lua $(DEPS)
+$(ODIR)/bytecode.o: src/wrk.lua
 	@echo LUAJIT $<
-	@$(SHELL) -c 'PATH="obj/bin:$(PATH)" luajit -b "$(CURDIR)/$<" "$(CURDIR)/$@"'
+	@echo@$(SHELL) -c 'PATH=obj/bin:$(PATH) luajit -b $(CURDIR)/$< $(CURDIR)/$(patsubst %.o,%.c,$@)'
+	@echo@$(CC) -xc -c -o $@ $(patsubst %.o,%.c,$@)
 
 $(ODIR)/%.o : %.c
 	@echo CC $<
