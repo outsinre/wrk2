@@ -13,8 +13,8 @@ else ifeq ($(TARGET), darwin)
 	ifneq ($(shell uname -m),arm64)
 	    LDFLAGS += -pagezero_size 10000 -image_base 100000000
 	endif
-	LIBS += -L/usr/local/opt/openssl/lib
-	CFLAGS += -I/usr/local/include -I/usr/local/opt/openssl/include
+	LIBS += -L$(shell brew --prefix)/opt/openssl@1.1/lib
+	CFLAGS += -I/usr/local/include -I$(shell brew --prefix)/opt/openssl@1.1/include
 else ifeq ($(TARGET), linux)
 	CFLAGS  += -D_POSIX_C_SOURCE=200809L -D_BSD_SOURCE
 	LIBS    += -ldl
@@ -53,7 +53,7 @@ $(ODIR):
 
 $(ODIR)/bytecode.c: src/wrk.lua
 	@echo LUAJIT $<
-	@$(SHELL) -c 'cd $(LDIR) && ./luajit -b $(CURDIR)/$< $(CURDIR)/$@'
+	@$(SHELL) -c 'cd $(LDIR) && ./luajit -b "$(CURDIR)/$<" "$(CURDIR)/$@"'
 
 $(ODIR)/%.o : %.c
 	@echo CC $<
